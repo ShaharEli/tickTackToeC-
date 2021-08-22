@@ -2,7 +2,52 @@
 #include <vector>
 using namespace std;
 
+// functions declarations
+void printColumn();
+
+string checkWinner(vector<vector<string> >);
+
+vector<vector<string> > createBoard();
+
+void printBoard(vector<vector<string> >);
+
+void printInstruction(string);
+
+bool validateInput(vector<vector<string> >, string);
+
+vector<vector<string> > playTurn(vector<vector<string> >, string);
+
+// consts declarations
+
 const int ROW_SIZE = 3;
+
+int main()
+{
+    string currentPlayer = "x";
+    string winner;
+    vector<vector<string> > board = createBoard();
+    while (winner.length() == 0)
+    {
+        board = playTurn(board, currentPlayer);
+        winner = checkWinner(board);
+        currentPlayer = currentPlayer == "x" ? "o" : "x";
+    }
+    cout << "congrats " << winner << " you won 🔥🎉" << endl;
+    string rematchAns;
+    cout << "rematch? (y/n)" << endl;
+    cin >> rematchAns;
+    while (rematchAns != "y" && rematchAns != "n")
+    {
+        cin.clear();
+        cout << "invlaid input (y/n)" << endl;
+        cin >> rematchAns;
+    };
+    if (rematchAns == "y")
+    {
+        main();
+    };
+    return 0;
+};
 
 void printColumn()
 {
@@ -13,6 +58,47 @@ void printColumn()
     }
     cout << columnDecorator << "\n";
 }
+vector<vector<string> > playTurn(vector<vector<string> > board, string currentPlayer)
+{
+    printInstruction(currentPlayer);
+    printBoard(board);
+    string pick;
+    bool isInputInConstraints = false;
+    cin >> pick;
+    isInputInConstraints = validateInput(board, pick);
+    while (!isInputInConstraints)
+    {
+        cout << "invalid input" << endl;
+        cin.clear();
+        cin >> pick;
+        isInputInConstraints = validateInput(board, pick);
+    };
+    const int rowFromPick = stoi(pick) / 3;
+    const int colFromPick = stoi(pick) % 3;
+    board[rowFromPick][colFromPick] = currentPlayer;
+    return board;
+};
+
+string checkWinner(vector<vector<string> > board)
+{
+    if (board[0][0] == board[0][1] && board[0][0] == board[0][2])
+        return board[0][0];
+    if (board[1][0] == board[1][1] && board[1][0] == board[1][2])
+        return board[1][0];
+    if (board[2][0] == board[2][1] && board[2][0] == board[2][2])
+        return board[2][0];
+    if (board[0][0] == board[1][0] && board[0][0] == board[2][0])
+        return board[0][0];
+    if (board[0][1] == board[1][1] && board[0][1] == board[2][1])
+        return board[0][1];
+    if (board[0][2] == board[1][2] && board[0][2] == board[2][2])
+        return board[0][2];
+    if (board[0][0] == board[1][1] && board[0][0] == board[2][2])
+        return board[0][0];
+    if (board[0][2] == board[1][1] && board[0][2] == board[2][0])
+        return board[0][2];
+    return "";
+};
 
 vector<vector<string> > createBoard()
 {
@@ -69,71 +155,4 @@ bool validateInput(vector<vector<string> > board, string input)
         };
     };
     return false;
-};
-
-vector<vector<string> > playTurn(vector<vector<string> > board, string currentPlayer)
-{
-    printInstruction(currentPlayer);
-    printBoard(board);
-    string pick;
-    bool isInputInConstraints = false;
-    cin >> pick;
-    isInputInConstraints = validateInput(board, pick);
-    while (!isInputInConstraints)
-    {
-        cout << "invalid input" << endl;
-        cin.clear();
-        cin >> pick;
-        isInputInConstraints = validateInput(board, pick);
-    };
-    const int rowFromPick = stoi(pick) / 3;
-    const int colFromPick = stoi(pick) % 3;
-    board[rowFromPick][colFromPick] = currentPlayer;
-    return board;
-};
-string checkWinner(vector<vector<string> > board)
-{
-    if (board[0][0] == board[0][1] && board[0][0] == board[0][2])
-        return board[0][0];
-    if (board[1][0] == board[1][1] && board[1][0] == board[1][2])
-        return board[1][0];
-    if (board[2][0] == board[2][1] && board[2][0] == board[2][2])
-        return board[2][0];
-    if (board[0][0] == board[1][0] && board[0][0] == board[2][0])
-        return board[0][0];
-    if (board[0][1] == board[1][1] && board[0][1] == board[2][1])
-        return board[0][1];
-    if (board[0][2] == board[1][2] && board[0][2] == board[2][2])
-        return board[0][2];
-    if (board[0][0] == board[1][1] && board[0][0] == board[2][2])
-        return board[0][0];
-    if (board[0][2] == board[1][1] && board[0][2] == board[2][0])
-        return board[0][2];
-    return "";
-};
-int main()
-{
-    string currentPlayer = "x";
-    string winner;
-    vector<vector<string> > board = createBoard();
-    while (winner.length() == 0)
-    {
-        board = playTurn(board, currentPlayer);
-        winner = checkWinner(board);
-        currentPlayer = currentPlayer == "x" ? "o" : "x";
-    }
-    cout << "congrats " << winner << " you won 🔥🎉" << endl;
-    string rematchAns;
-    cout << "rematch? (y/n)" << endl;
-    cin >> rematchAns;
-    while (rematchAns != "y" && rematchAns != "n")
-    {
-        cin.clear();
-        cout << "invlaid input (y/n)" << endl;
-        cin >> rematchAns;
-    };
-    if (rematchAns == "y")
-    {
-        main();
-    };
 };
